@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestion des Collections</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <div id="navbar"></div>
+
+  <div class="container py-5">
+    <h2 class="text-2xl font-bold mb-4">Liste des Collections</h2>
+
+    <!-- Formulaire d'ajout -->
+    <form id="addCollectionForm" class="bg-white shadow-md rounded p-4 mb-5">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <input type="text" id="nom" placeholder="Nom de la collection" class="form-control" required />
+        <input type="text" id="description" placeholder="Description" class="form-control" />
+      </div>
+      <button type="submit" class="btn btn-success mt-3">Ajouter</button>
+    </form>
+
+    <!-- Tableau -->
+    <div class="table-responsive">
+      <table class="table table-bordered bg-white">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="collectionsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- Modal Confirmation Retrait Produit -->
+<div class="modal fade" id="confirmRemoveProduitModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmer le retrait</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir retirer ce produit de la collection ?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button id="confirmRemoveProduitBtn" class="btn btn-danger">Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Modal modification -->
+  <div class="modal fade" id="editCollectionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier Collection</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editCollectionForm">
+            <input type="hidden" id="edit_id" />
+            <div class="mb-3">
+              <label for="edit_nom" class="form-label">Nom</label>
+              <input type="text" id="edit_nom" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="edit_description" class="form-label">Description</label>
+              <input type="text" id="edit_description" class="form-control" />
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-primary">Modifier</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal d'association de produit -->
+  <div class="modal fade" id="addProduitModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Associer un Produit</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addProduitForm">
+            <input type="hidden" id="assocCollectionId" />
+            <div class="mb-3">
+              <label for="produitSelect" class="form-label">Produit</label>
+              <select id="produitSelect" class="form-select" required></select>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-success">Associer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offcanvas affichage des produits -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="produitsOffcanvas" aria-labelledby="produitsOffcanvasLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="produitsOffcanvasLabel">Produits de la Collection</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="produitsOffcanvasBody">
+      <!-- Contenu chargé dynamiquement -->
+    </div>
+  </div>
+
+  <!-- Modal confirmation suppression -->
+  <div class="modal fade" id="confirmDeleteCollectionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmer la suppression</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Êtes-vous sûr de vouloir supprimer cette collection ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button id="confirmDeleteCollectionBtn" class="btn btn-danger">Supprimer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/collection.js"></script>
+  <script>
+    $(function () {
+      $('#navbar').load('../components/navbar.html');
+      $('#footer').load('../components/footer.html');
+    });
+  </script>
+</body>
+</html>

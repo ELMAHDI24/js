@@ -1,0 +1,79 @@
+/* Table styles */
+#userTable {
+  font-size: 0.9rem;
+}
+
+#userTable th {
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Badge styles */
+.badge {
+  font-size: 0.75em;
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+/* Modal styles */
+.modal-content {
+  border-radius: 0.5rem;
+  border: none;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 1.5rem;
+}
+
+.modal-title {
+  font-weight: 600;
+  color: #212529;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+  padding: 1rem 1.5rem;
+}
+
+/* Button styles */
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.775rem;
+}
+
+/* Tooltip styles */
+.tooltip {
+  font-size: 0.8rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 0.5rem auto;
+  }
+  
+  #userTable td {
+    white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Animation for buttons */
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}

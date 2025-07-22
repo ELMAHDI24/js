@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestion des Produits</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .pagination .page-item.active .page-link {
+      background-color: #3b82f6;
+      border-color: #3b82f6;
+    }
+    .pagination .page-link {
+      color: #3b82f6;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <div id="navbar"></div>
+
+  <div class="container py-5">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold">Liste des Produits</h2>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+        <i class="bi bi-plus"></i> Ajouter un produit
+      </button>
+    </div>
+
+    <!-- Filtres et recherche -->
+    <div class="bg-white shadow-md rounded p-4 mb-4">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom...">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select id="filterCatalogue" class="form-select">
+            <option value="">Tous les catalogues</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select id="priceSort" class="form-select">
+            <option value="">Trier par prix</option>
+            <option value="asc">Croissant</option>
+            <option value="desc">Décroissant</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button id="resetFilters" class="btn btn-outline-secondary w-100">
+            <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des produits -->
+    <div class="table-responsive bg-white shadow-md rounded">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Prix</th>
+            <th>Image</th>
+            <th>Catalogue</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="produitsTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center" id="pagination"></ul>
+    </nav>
+
+    <!-- Modal d'ajout -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ajouter un nouveau produit</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="addProductForm" enctype="multipart/form-data">
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="nom" class="form-label">Nom</label>
+                  <input type="text" id="nom" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="prix" class="form-label">Prix (DH)</label>
+                  <input type="number" step="0.01" id="prix" class="form-control" required>
+                </div>
+                <div class="col-12">
+                  <label for="description" class="form-label">Description</label>
+                  <textarea id="description" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label for="cataloge_id" class="form-label">Catalogue</label>
+                  <select id="cataloge_id" class="form-select" required>
+                    <option value="">Sélectionner un catalogue</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="image_file" class="form-label">Image</label>
+                  <input type="file" id="image_file" accept="image/*" class="form-control">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-primary">Ajouter</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de modification -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modifier le produit</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="editProductForm" enctype="multipart/form-data">
+            <div class="modal-body">
+              <input type="hidden" id="edit_id">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="edit_nom" class="form-label">Nom</label>
+                  <input type="text" id="edit_nom" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="edit_prix" class="form-label">Prix (DH)</label>
+                  <input type="number" step="0.01" id="edit_prix" class="form-control" required>
+                </div>
+                <div class="col-12">
+                  <label for="edit_description" class="form-label">Description</label>
+                  <textarea id="edit_description" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label for="edit_cataloge_id" class="form-label">Catalogue</label>
+                  <select id="edit_cataloge_id" class="form-select" required>
+                    <option value="">Sélectionner un catalogue</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="edit_image_file" class="form-label">Nouvelle image</label>
+                  <input type="file" id="edit_image_file" accept="image/*" class="form-control">
+                  <div class="form-text">Image actuelle: <span id="current_image" class="fw-bold"></span></div>
+                  <div id="currentImagePreview" class="mt-2"></div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      <!-- Modal de confirmation de suppression -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title">Confirmer la suppression</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Êtes-vous sûr de vouloir supprimer ce produit ? Cette action est irréversible.</p>
+            <p class="fw-bold" id="productToDeleteName"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Supprimer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <div id="footer"></div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/produits.js"></script>
+  <script>
+    $(function () {
+      $('#navbar').load('../components/navbar.html');
+      $('#footer').load('../components/footer.html');
+    });
+  </script>
+</body>
+</html>

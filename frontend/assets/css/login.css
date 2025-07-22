@@ -1,0 +1,55 @@
+/* Animations personnalisées */
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-fade-in-scale {
+    animation: fadeInScale 0.6s ease-out forwards;
+}
+
+/* Styles pour les inputs */
+.input-group {
+    position: relative;
+}
+
+.input-group i {
+    transition: color 0.3s ease;
+}
+
+.input-group input:focus + i {
+    color: #3b82f6;
+}
+
+/* Bouton submit */
+#submitBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background: #ccc;
+}
+
+/* Messages d'alerte */
+.alert-message {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.alert-message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Logo responsive */
+@media (max-width: 640px) {
+    .logo-container img {
+        height: 3rem;
+    }
+}
